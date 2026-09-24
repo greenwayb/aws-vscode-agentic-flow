@@ -6,6 +6,21 @@ Base Level Project to create a workplace for agentic flow.
 export $(grep -v '^#' .env | xargs) && opencode
 ```
 
+# Running Whilst Detaching
+```
+tmux new -s opencode-work
+export $(grep -v '^#' .env | xargs)
+opencode
+```
+Close using ctrl+b, then d (to close cleanly)
+
+
+On resume
+```
+tmux attach -t opencode-work
+```
+
+# Setup
 
 And allow remote vscode deployment / access. 
 
