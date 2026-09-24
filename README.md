@@ -1,7 +1,7 @@
 # Introduction
 Base Level Project to create a workplace for agentic flow.
 
-Create and EC2 Instance (Ubuntu 24.04 LTS with T3.Large)
+
 
 And allow remote vscode deployment / access. 
 
@@ -11,6 +11,9 @@ Two approaches possible:
 * Open Source Browser Mode [code-server](https://github.com/coder/code-server)
 
 This will use the official MS vscode-server
+
+
+Create and EC2 Instance (Ubuntu 24.04 LTS with T3.Large), set disk space to 60GB then in (advanced) User Data field use (remembering to change the GH_ACCESS_TOKEN and the TUNNEL_NAME
 
 ## Ec2 User Data Field
 
@@ -120,10 +123,14 @@ sudo chmod +x /usr/bin/envoy
 ```
 # ---------------------------------------------------
 # launch
+Goto a webbrowser and use the $TUNNEL_NAME for the workspace
 https://vscode.dev/tunnel/ec2-ben-workspace
 
-Check the service:
+Check the service, if issues: 
+sudo journalctl -u vscode-tunnel.service -n 50 --no-pager
 
+Some issues seen:
+```
 Sep 24 14:21:25 ip-172-31-16-244 code[2716]: *
 Sep 24 14:21:25 ip-172-31-16-244 code[2716]: [2026-09-24 14:21:25] info Using GitHub for authentication, run `code tunnel user login --provider <provider>` option to change this.
 Sep 24 14:21:25 ip-172-31-16-244 code[2716]: To grant access to the server, please log into https://github.com/login/device and use code 730F-9AFB
@@ -131,3 +138,13 @@ Sep 24 14:21:25 ip-172-31-16-244 code[2716]: To grant access to the server, plea
 Also Check
 Sep 24 14:24:40 ip-172-31-16-244 code[2779]: [2026-09-24 14:24:40] info Names cannot be longer than 20 characters. Please try a different name. is an invalid name
 Sep 24 14:24:40 ip-172-31-16-244 code[2779]: [2026-09-24 14:24:40] error invalid name: Names cannot be longer than 20 characters. Please try a different name.
+```
+
+
+
+# Agentic Development
+.env should include:  (TODO .env was when use devcontainers, but now moving to own ec2 instance)
+```
+AWS_BEARER_TOKEN_BEDROCK=
+AWS_REGION=us-east-1
+```
