@@ -1,6 +1,10 @@
 # Introduction
 Base Level Project to create a workplace for agentic flow.
 
+# On Restart - OpenCode launch
+```
+export $(grep -v '^#' .env | xargs) && opencode
+```
 
 
 And allow remote vscode deployment / access. 
