@@ -5,15 +5,16 @@ Create and EC2 Instance (Ubuntu 24.04 LTS with T3.Large)
 
 And allow remote vscode deployment / access. 
 
-To approaches:
+Two approaches possible:
 
 * Official [vscode-server](https://code.visualstudio.com/docs/remote/vscode-server)
 * Open Source Browser Mode [code-server](https://github.com/coder/code-server)
 
+This will use the official MS vscode-server
 
 ## Ec2 User Data Field
 
-
+```
 #!/bin/bash
 set -euxo pipefail
 
@@ -75,6 +76,48 @@ systemctl daemon-reload
 systemctl enable vscode-tunnel.service
 systemctl start vscode-tunnel.service
 
+# Additional Settings
+# Node/NPM
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl gnupg
+
+# Add NodeSource repository for the LTS release
+sudo curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+
+# Install Node.js and npm without prompts
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" nodejs
+
+echo "Installing OpenCode and agent-browser..."
+sudo npm install -g opencode-ai 
+sudo npm install -g agent-browser
+
+# https://github.com/trailhq/Graft
+# echo "Adding graft"
+# npm install -g @nanonets/graft   # install the CLI, once
+
+echo "Installing Chromium..."
+# Chrome for Testing has no Linux ARM64 builds, so use Debian's chromium on all
+# architectures; agent-browser finds it via AGENT_BROWSER_EXECUTABLE_PATH (containerEnv).
+sudo find /etc/apt/sources.list.d -maxdepth 1 -type f -iname '*yarn*' -delete
+sudo apt-get update
+sudo apt-get install -y chromium
+
+echo "Adding the agent-browser skill for OpenCode..."
+sudo npx -y skills add vercel-labs/agent-browser -a opencode -y
+
+sudo apt-get install -y openjdk-25-jdk
+
+## Install Maven and SQLite CLI
+sudo apt-get install -y maven
+
+sudo apt-get install -y sqlite3
+
+echo "Installing envoy"
+sudo curl -sL -o /usr/bin/envoy https://github.com/envoyproxy/envoy/releases/download/v1.32.1/envoy-1.32.1-linux-x86_64
+sudo chmod +x /usr/bin/envoy
+
+
+```
 # ---------------------------------------------------
 # launch
 https://vscode.dev/tunnel/ec2-ben-workspace
