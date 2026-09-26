@@ -146,7 +146,9 @@ Goto a webbrowser and use the $TUNNEL_NAME for the workspace
 https://vscode.dev/tunnel/ec2-ben-workspace
 
 Check the service, if issues: 
+```
 sudo journalctl -u vscode-tunnel.service -n 50 --no-pager
+```
 
 Some issues seen:
 ```
